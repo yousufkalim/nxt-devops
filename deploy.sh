@@ -12,5 +12,5 @@ eksctl create cluster --name nxt-devops-cluster --node-type t2.micro --region us
 aws eks update-kubeconfig --name nxt-devops-cluster --region us-east-2
 
 # Deploy the application to EKS
-kubectl apply -f deployment.yaml
-kubectl apply -f service.yaml
+kubectl apply -f deployment.yml
+kubectl apply -f service.yml
