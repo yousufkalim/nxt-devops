@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nxt-devops
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nxt-devops
+  template:
+    metadata:
+      labels:
+        app: nxt-devops
+    spec:
+      containers:
+        - name: nxt-devops
+          image: ghcr.io/yousufkalim/nxt-devops:latest
+          ports:
+            - containerPort: 3000
