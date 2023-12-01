@@ -17,7 +17,7 @@ module "auth" {
 }
 
 module "backend" {
-  source = "./modules/backend"
+  source = "modules/servers"
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -29,10 +29,6 @@ module "caching" {
 module "database" {
   source = "./modules/database"
   vpc_id = aws_vpc.vpc.id
-}
-
-module "frontend" {
-  source = "./modules/frontend"
 }
 
 module "storage" {

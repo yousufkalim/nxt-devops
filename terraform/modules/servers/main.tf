@@ -29,8 +29,8 @@ resource "aws_security_group" "web_sg" {
 }
 
 # Create an EC2 instance launch template
-resource "aws_launch_template" "backend_lt" {
-  name = "backend-lt"
+resource "aws_launch_template" "web_lt" {
+  name = "web-lt"
 
   image_id = "ami-05983a09f7dc1c18f"
   instance_type = "t2.micro"
@@ -47,30 +47,30 @@ resource "aws_launch_template" "backend_lt" {
 }
 
 # Create an autoscaling group for the EC2 instances
-resource "aws_autoscaling_group" "backend_asg" {
-  name = "backend-asg"
+resource "aws_autoscaling_group" "web_asg" {
+  name = "web-asg"
   min_size = 1
   max_size = 3
-  target_group_arns = [aws_lb_target_group.backend_tg.arn]
+  target_group_arns = [aws_lb_target_group.web_tg.arn]
 
   launch_template {
-    id = aws_launch_template.backend_lt.id
+    id = aws_launch_template.web_lt.id
   }
 
   vpc_zone_identifier = [aws_subnet.public_subnet.id]
 }
 
 # Create a load balancer for the EC2 instances
-resource "aws_lb" "backend_lb" {
-  name = "backend-lb"
+resource "aws_lb" "web_lb" {
+  name = "web-lb"
   subnets = [aws_subnet.public_subnet.id]
 
   internal = false
 }
 
 # Create a target group for the EC2 instances
-resource "aws_lb_target_group" "backend_tg" {
-  name = "backend-tg"
+resource "aws_lb_target_group" "web_tg" {
+  name = "web-tg"
   port = 80
   protocol = "HTTP"
   vpc_id = var.vpc_id
@@ -84,8 +84,8 @@ resource "aws_lb_target_group" "backend_tg" {
 }
 
 # Create LB Listener
-resource "aws_lb_listener" "backend_listener" {
-  load_balancer_arn = aws_lb.backend_lb.arn
+resource "aws_lb_listener" "web_listener" {
+  load_balancer_arn = aws_lb.web_lb.arn
   port              = "80"
   protocol          = "HTTP"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
@@ -93,17 +93,17 @@ resource "aws_lb_listener" "backend_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_tg.arn
+    target_group_arn = aws_lb_target_group.web_tg.arn
   }
 }
 
 # Create a listener rule for the load balancer
-resource "aws_lb_listener_rule" "backend_listener_rule" {
-  listener_arn = aws_lb_listener.backend_listener.arn
+resource "aws_lb_listener_rule" "web_listener_rule" {
+  listener_arn = aws_lb_listener.web_listener.arn
   priority = 10
   action {
     type = "forward"
-    target_group_arn = aws_lb_target_group.backend_tg.arn
+    target_group_arn = aws_lb_target_group.web_tg.arn
   }
 
   condition {
