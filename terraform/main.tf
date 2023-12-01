@@ -16,8 +16,8 @@ module "auth" {
   source = "./modules/auth"
 }
 
-module "backend" {
-  source = "modules/servers"
+module "servers" {
+  source = "./modules/servers"
   vpc_id = aws_vpc.vpc.id
 }
 
